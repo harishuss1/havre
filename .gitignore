@@ -1,0 +1,83 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env/
+
+# ── Environment variables (NEVER commit these) ─────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+!.env.example        # keep the example template in the repo
+
+# ── Database ───────────────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Playwright ─────────────────────────────────────────────────────────────────
+playwright-report/
+test-results/
+
+# ── Node / Next.js ─────────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.npm
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
+logs/
+celery*.log
+pip-log.txt
+
+# ── OS files ───────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# ── IDEs ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Testing & coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.mypy_cache/
+.ruff_cache/
+
+# ── Alembic ────────────────────────────────────────────────────────────────────
+# Keep versions/ tracked but ignore any local migration temp files
+alembic/versions/*.pyc
+
+# ── Celery ─────────────────────────────────────────────────────────────────────
+celerybeat-schedule
+celerybeat.pid
+
+# ── Misc ───────────────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+.cache/
