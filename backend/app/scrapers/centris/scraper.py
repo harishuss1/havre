@@ -388,10 +388,6 @@ class CentrisScraper(BaseScraper):
         await asyncio.sleep(0.5)
 
     async def _go_to_next_page(self, page: Page) -> bool:
-        """
-        Clicks the 'Next' pagination button if it exists.
-        Returns True if navigation succeeded, False if no next page.
-        """
         next_btn = await page.query_selector(PAGINATION_NEXT)
         if not next_btn:
             return False
@@ -400,9 +396,13 @@ class CentrisScraper(BaseScraper):
         if is_disabled == "true":
             return False
 
-        await next_btn.click()
-        await page.wait_for_load_state("networkidle", timeout=20_000)
-        return True
+        try:
+            await next_btn.click()
+            await page.wait_for_load_state("networkidle", timeout=45_000)
+            return True
+        except Exception as e:
+            print(f"[centris] Pagination timeout, stopping: {e}")
+            return False
 
     async def _fetch_detail_page(self, page: Page, url: str) -> dict:
         """

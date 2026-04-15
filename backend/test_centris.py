@@ -53,12 +53,14 @@ async def main():
         print(f"     Size:     {l.size_sqft} sqft" if l.size_sqft else "     Size:     N/A")
         print(f"     URL:      {l.listing_url}")
         print()
-        print("\n── Searching for listing 18366795 ──")
-        match = next((l for l in listings if "18366795" in l.listing_url), None)
-        if match:
-            print(f"✓ FOUND: {match.address} — ${match.price:,}")
-        else:
-            print("✗ Not found in this batch (may be on a later page)")
+
+    # ── outside the loop ──
+    print("\n── Searching for listing 18366795 ──")
+    match = next((l for l in listings if "18366795" in l.listing_url), None)
+    if match:
+        print(f"✓ FOUND: {match.address} — ${match.price:,}")
+    else:
+        print("✗ Not found in this batch (may be on a later page)")
 
     if not listings:
         print("No listings returned. Try setting headless=False to watch the browser")
