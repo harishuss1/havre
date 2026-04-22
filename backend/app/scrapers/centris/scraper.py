@@ -16,7 +16,7 @@ import asyncio
 import json
 import random
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 from playwright.async_api import async_playwright, Page, BrowserContext
 
@@ -348,7 +348,7 @@ class CentrisScraper(BaseScraper):
             "images": images,
             "property_type": property_type,
             "description": "",
-            "scraped_at": datetime.utcnow().isoformat(),
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
         }
 
     @staticmethod
