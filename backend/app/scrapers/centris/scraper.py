@@ -98,8 +98,9 @@ class CentrisScraper(BaseScraper):
                 city_slug = self._build_city_slug(criteria.cities)
                 search_url = SEARCH_PAGE_URL.format(city=city_slug)
                 print(f"[centris] Loading search page: {search_url}")
-                await page.goto(search_url, wait_until="networkidle", timeout=30_000)
-                await self._random_delay()
+                await page.goto(search_url, wait_until="domcontentloaded", timeout=30_000)
+                await asyncio.sleep(5)
+                await self._wait_for_listings(page)
 
                 # Step 2: Apply search filters via the Centris internal API
                 await self._apply_filters(page, criteria)
@@ -255,7 +256,8 @@ class CentrisScraper(BaseScraper):
         print(f"[centris] Filter API response status: {result}")
 
         # Reload the page to apply the new filters
-        await page.reload(wait_until="networkidle", timeout=30_000)
+        await page.reload(wait_until="domcontentloaded", timeout=30_000)
+        await asyncio.sleep(4)
         await self._wait_for_listings(page)
 
     async def _wait_for_listings(self, page: Page) -> None:
@@ -397,11 +399,14 @@ class CentrisScraper(BaseScraper):
             return False
 
         try:
-            await next_btn.click()
-            await page.wait_for_load_state("networkidle", timeout=45_000)
+            # Use JS click to bypass viewport/interactability requirements
+            await page.evaluate("(el) => el.click()", next_btn)
+            await page.wait_for_load_state("domcontentloaded", timeout=30_000)
+            await asyncio.sleep(4)
+            await self._wait_for_listings(page)
             return True
         except Exception as e:
-            print(f"[centris] Pagination timeout, stopping: {e}")
+            print(f"[centris] Pagination error, stopping: {e}")
             return False
 
     async def _fetch_detail_page(self, page: Page, url: str) -> dict:

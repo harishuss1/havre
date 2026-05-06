@@ -25,10 +25,8 @@ async def main():
 
     criteria = SearchCriteria(
         min_price=300_000,
-        max_price=400_000,
-        min_bedrooms=2,
+        max_price=900_000,
         cities=["Montreal"],
-        property_types=["condo"],
         max_results=100,
     )
 
@@ -55,12 +53,12 @@ async def main():
         print()
 
     # ── outside the loop ──
-    print("\n── Searching for listing 18366795 ──")
+    print("\n-- Searching for listing 18366795 --")
     match = next((l for l in listings if "18366795" in l.listing_url), None)
     if match:
-        print(f"✓ FOUND: {match.address} — ${match.price:,}")
+        print(f"FOUND: {match.address} -- ${match.price:,}")
     else:
-        print("✗ Not found in this batch (may be on a later page)")
+        print("Not found in this batch (may be on a later page)")
 
     if not listings:
         print("No listings returned. Try setting headless=False to watch the browser")

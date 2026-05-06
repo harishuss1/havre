@@ -18,7 +18,7 @@ async def main():
     for l in listings[:5]:
         print(f"  [{l.property_type}] {l.address}, {l.city} — ${l.price:,}")
         
-    print("\n── Raw URLs for debugging ──")
+    print("\n-- Raw URLs for debugging --")
     for l in listings:
         print(f"  {l.listing_url}")
 
