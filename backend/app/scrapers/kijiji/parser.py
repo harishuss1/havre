@@ -12,6 +12,8 @@ def parse_price(raw: str | None) -> int:
     # Kijiji sometimes shows "Please Contact" or "Swap/Trade"
     if not any(c.isdigit() for c in (raw or "")):
         return 0
+    # Strip decimal cents before removing non-digits (e.g. "$369,900.00" → "$369,900")
+    raw = re.sub(r"\.\d+", "", raw)
     digits = re.sub(r"[^\d]", "", raw)
     return int(digits) if digits else 0
 

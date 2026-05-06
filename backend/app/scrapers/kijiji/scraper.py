@@ -22,7 +22,6 @@ from .selectors import (
     CARD_ADDRESS,
     CARD_LINK,
     CARD_IMAGE,
-    CARD_BEDROOMS,
     PAGINATION_NEXT,
 )
 from .parser import (
@@ -59,8 +58,14 @@ class KijijiScraper(BaseScraper):
         raw_listings: list[dict] = []
 
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=self.headless)
+            browser = await p.chromium.launch(
+                headless=self.headless,
+                args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+            )
             context = await self._create_context(browser)
+            await context.add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
+            )
             page = await context.new_page()
 
             try:
@@ -75,8 +80,9 @@ class KijijiScraper(BaseScraper):
                     url += "?" + "&".join(params)
 
                 print(f"[kijiji] Loading: {url}")
-                await page.goto(url, wait_until="networkidle", timeout=30_000)
-                await self._random_delay()
+                await page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+                print("[kijiji] Waiting 8s for JS to render...")
+                await asyncio.sleep(8)
 
                 page_num = 1
                 while page_num <= self.max_pages:
@@ -178,8 +184,8 @@ class KijijiScraper(BaseScraper):
         addr_el   = await card.query_selector(CARD_ADDRESS)
         address   = await addr_el.inner_text() if addr_el else ""
 
-        bed_el    = await card.query_selector(CARD_BEDROOMS)
-        bedrooms  = await bed_el.inner_text() if bed_el else None
+        # Bedrooms not shown on list cards — will be inferred from title in normalise()
+        bedrooms  = None
 
         link_el   = await card.query_selector(CARD_LINK)
         url       = await link_el.get_attribute("href") if link_el else None
@@ -235,7 +241,8 @@ class KijijiScraper(BaseScraper):
             return False
         try:
             await next_btn.click()
-            await page.wait_for_load_state("networkidle", timeout=45_000)
+            await page.wait_for_load_state("domcontentloaded", timeout=45_000)
+            await asyncio.sleep(5)
             return True
         except Exception as e:
             print(f"[kijiji] Pagination error: {e}")

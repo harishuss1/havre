@@ -81,3 +81,7 @@ celerybeat.pid
 *.bak
 *.tmp
 .cache/
+
+.claude/
+.claude
+havre_project_context.md
