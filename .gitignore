@@ -85,3 +85,4 @@ celerybeat.pid
 .claude/
 .claude
 havre_project_context.md
+history/
